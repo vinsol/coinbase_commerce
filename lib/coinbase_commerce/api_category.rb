@@ -27,9 +27,9 @@ module CoinbaseCommerce
       set_api_url
       params = @default_params.merge(params)
       if (response = send_api_request(method, params))
-        parsed_response = response.parsed_response
+        parsed_response = RecursiveOpenStruct.new(response.parsed_response, preserve_original_keys: true, recurse_over_arrays: true)
         raise_error_with_message(parsed_response) if should_raise_for_response?(response.code)
-        parsed_response
+        parsed_response.data
       end
     end
 
@@ -53,14 +53,14 @@ module CoinbaseCommerce
     end
 
     def set_api_url
-      @api_url = URI.encode(@api_endpoint + @category_name)
+      @api_url = URI.encode("#{@api_endpoint}/#{@category_name}")
     end
 
-    def raise_error_with_message(parsed_response={})
-      parsed_response['error'] ||= {}
-      error = CoinbaseCommerceError.new(parsed_response['error']['message'])
-      error.code = parsed_response['error']['error']
-      error.name = parsed_response['error']['code']
+    def raise_error_with_message(parsed_response)
+      parsed_error = parsed_response.error || OpenStruct.new
+      error = CoinbaseCommerceError.new(parsed_error.message)
+      error.code = parsed_error.error
+      error.name = parsed_error.code
       CoinbaseCommerce::API.logger.error "ERROR:#{error.name} #{error.message} ERROR CODE: #{error.code}"
       raise error
     end
