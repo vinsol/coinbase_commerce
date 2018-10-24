@@ -33,7 +33,7 @@ You can set `api_key`, `timeout`, `throws_exceptions`, `retry_if_fails` and `log
     CoinbaseCommerce::API.logger = Logger.new("#{Rails.root}/log/coinbase_commerce.log")
 
 You can set webhook `shared_secret` to verify the webhooks.
-  CoinbaseCommerce::Webhhok.shared_secret = "your_shared_secret"
+  CoinbaseCommerce::Webhook.shared_secret = "your_shared_secret"
 
 For example, you could set the values above in an `initializer` file in your `Rails` app (e.g. your\_app/config/initializers/coinbase_commerce.rb).
 
@@ -75,13 +75,13 @@ Or, to update a checkout by id:
 
 The above examples were for only checkout resource. Same way it can be used for other resources i.e. charges, events etc.
 
-To verify a webhook request you can simply check in a `before_filter`
+To verify a webhook request you can simply check in a `before_action`
 
-  begin
-    CoinbaseCommerce::Webhhok.verify(request)
-  rescue CoinbaseCommerce::CoinbaseCommerceError => e
-    # do something 
-  end
+    begin
+      CoinbaseCommerce::Webhook.verify(request)
+    rescue CoinbaseCommerce::CoinbaseCommerceError => e
+      # do something 
+    end
 
 
 ### Setting timeouts

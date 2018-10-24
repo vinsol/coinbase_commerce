@@ -36,7 +36,7 @@ module CoinbaseCommerce
     def send_api_request(method, params)
       begin
         CoinbaseCommerce::API.logger.info "Try Count: #{ @try_count } Start CoinbaseCommerce API Request #{ @api_url }"
-        response = HTTParty.send(method, @api_url, :body => MultiJson.dump(params), headers: { 'X-CC-Api-Key' => @api_key, 'X-CC-Version' => @version }, :timeout => @timeout)
+        response = HTTParty.send(method, @api_url, body: MultiJson.dump(params), headers: { 'X-CC-Api-Key' => @api_key, 'X-CC-Version' => @version, 'Content-Type' => 'application/json' }, timeout: @timeout)
         CoinbaseCommerce::API.logger.info "Try Count: #{ @try_count } End CoinbaseCommerce API Request Response Code: #{response.code}"
         raise CoinbaseCommerceError, 'Retrying TooManyRequestsError Response Code: 429' if (response.code == 429 && should_retry_if_fails?)
         return response

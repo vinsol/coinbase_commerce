@@ -1,5 +1,5 @@
 module CoinbaseCommerce
-  class Webhhok
+  class Webhook
     cattr_accessor :shared_secret
 
     def self.verify(request)
